@@ -65,6 +65,7 @@ install (
 if(BUILD_TESTING)
   #find_package(ament_lint_auto REQUIRED)
   find_package(ament_cmake_pytest REQUIRED)
+  find_package(ament_cmake_gtest REQUIRED)
   # the following line skips the linter which checks for copyrights
   # comment the line when a copyright and license is added to all source files
   #set(ament_cmake_copyright_FOUND TRUE)
@@ -73,8 +74,19 @@ if(BUILD_TESTING)
   # a copyright and license is added to all source files
   #set(ament_cmake_cpplint_FOUND TRUE)
   #ament_lint_auto_find_test_dependencies()
+  #Python Tests
   ament_add_pytest_test(minimal_publisher_test test/pytest/test_publisher.py
     TIMEOUT 60
+  )
+
+  #C++ tests
+  ament_add_gtest(cpp_minimal_publisher_test test/gtest/test_publisher.cpp)
+
+  #Add dependencies for the C++ test executable
+  target_link_libraries(cpp_minimal_publisher_test rclcpp::rclcpp std_msgs::std_msgs)
+  target_include_directories(cpp_minimal_publisher_test PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
   )
 endif()
 
